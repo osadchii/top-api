@@ -41,11 +41,22 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/review/create (POST) - Fail', async (done) => {
+    return request(app.getHttpServer())
+      .post('/review/create')
+      .send({ ...testDto, rating: 0 })
+      .expect(400)
+      .then(({ body }: request.Response) => {
+        console.log(body);
+        done();
+      });
+  });
+
   it('/review/byProduct/:productId (GET) - Success', async (done) => {
     return request(app.getHttpServer())
       .get('/review/byProduct/' + productId)
       .expect(200)
-      .then(({body}: request.Response) => {
+      .then(({ body }: request.Response) => {
         expect(body.length).toBe(1);
         done();
       });
@@ -55,7 +66,7 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/review/byProduct/' + new Types.ObjectId().toHexString())
       .expect(200)
-      .then(({body}: request.Response) => {
+      .then(({ body }: request.Response) => {
         expect(body.length).toBe(0);
         done();
       });
@@ -72,12 +83,11 @@ describe('AppController (e2e)', () => {
       .delete('/review/' + new Types.ObjectId().toHexString())
       .expect(404, {
         statusCode: 404,
-        message: REVIEW_NOT_FOUND
+        message: REVIEW_NOT_FOUND,
       });
   });
 
   afterAll(() => {
     disconnect();
   });
-
 });
