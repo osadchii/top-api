@@ -47,7 +47,7 @@ export class ProductController {
 
   @UsePipes(new ValidationPipe())
   @Patch(':id')
-  async patch(@Param('id', IdValidationPipe) id: string, @Body() dto: ProductModel) {
+  async patch(@Param('id', IdValidationPipe) id: string, @Body() dto: CreateProductDto) {
     const updatedProduct = await this.productService.updateById(id, dto);
     if (!updatedProduct) {
       throw new NotFoundException(PRODUCT_NOT_FOUNT_ERROR);
