@@ -12,7 +12,6 @@ const loginDto: AuthDto = {
 
 describe('Auth Controller (e2e)', () => {
   let app: INestApplication;
-  let token: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -37,7 +36,6 @@ describe('Auth Controller (e2e)', () => {
   it('/auth/login (POST) - Fail', () => {
     return request(app.getHttpServer())
       .post('/review/create')
-      .set('Authorization', `Bearer ${token}`)
       .send({ ...loginDto, password: new Types.ObjectId().toHexString() })
       .expect(401);
   });

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ModelType } from '@typegoose/typegoose/lib/types';
 import { InjectModel } from 'nestjs-typegoose';
 import { ReviewModel } from 'src/review/review.model';
+import { ReviewService } from 'src/review/review.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindProductDto } from './dto/find-product.dto';
 import { ProductModel } from './product.model';
@@ -54,13 +55,23 @@ export class ProductService {
             from: 'Review',
             localField: '_id',
             foreignField: 'productId',
-            as: 'review',
+            as: 'reviews',
           },
         },
         {
           $addFields: {
-            reviewCount: { $size: '$review' },
-            reviewAvg: { $avg: '$review.rating' },
+            reviewCount: { $size: '$reviews' },
+            reviewAvg: { $avg: '$reviews.rating' },
+            reviews: {
+              $function: {
+                body: `function (reviews) {
+                  reviews.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                  return reviews;
+                }`,
+                args: ['$reviews'],
+                lang: 'js'
+              }
+            }
           },
         },
       ])
