@@ -48,6 +48,7 @@ export class CreateTopPageDto {
   category: string;
 
   @IsOptional()
+  @Type(() => HhDataDto)
   @ValidateNested()
   hh: HhDataDto;
 
@@ -60,7 +61,7 @@ export class CreateTopPageDto {
   seoText: string;
 
   @IsArray()
-  @Type(() => String)
+  @IsString({ each: true })
   tags: string[];
 
   @IsString()

@@ -36,6 +36,15 @@ export class TopPageController {
     return topPage;
   }
 
+  @Get('byAlias:alias')
+  async getByAlias(@Param('alias') alias: string) {
+    const topPage = await this.topPageService.findByAlias(alias);
+    if (!topPage) {
+      throw new NotFoundException(TOPPAGE_NOT_FOUND_ERROR);
+    }
+    return topPage;
+  }
+
   @Delete(':id')
   async delete(@Param('id', IdValidationPipe) id: string) {
     const deletedTopPage = await this.topPageService.deleteById(id);
@@ -56,7 +65,10 @@ export class TopPageController {
       return updatedTopPage;
   }
 
+  @UsePipes(new ValidationPipe())
   @HttpCode(200)
-  @Post()
-  async find(@Body() dto: FindTopPageDto) {}
+  @Post('find')
+  async find(@Body() dto: FindTopPageDto) {
+      return this.topPageService.findByCategory(dto.firstCategory);
+  }
 }
